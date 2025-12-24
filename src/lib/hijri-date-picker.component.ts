@@ -36,6 +36,8 @@ export class HijriDatePickerComponent implements OnInit, OnChanges {
   @Input() futureValidation: boolean = true;
   @Input() futureYearsLimit: number = 10;
   @Input() isRequired: boolean = false;
+  @Input() minDate?: Date; // Minimum selectable date
+  @Input() maxDate?: Date; // Maximum selectable date
 
   // Selection
   @Input() multiple: boolean = false;
@@ -113,6 +115,12 @@ export class HijriDatePickerComponent implements OnInit, OnChanges {
       this.initializeSelectedDates();
       this.generateCalendar();
     }
+
+    // Handle changes to minDate or maxDate
+    if (changes['minDate'] || changes['maxDate']) {
+      this.generateYears();
+      this.generateCalendar();
+    }
   }
 
   private initializeCalendar(): void {
@@ -176,8 +184,27 @@ export class HijriDatePickerComponent implements OnInit, OnChanges {
 
   private generateYears(): void {
     const currentYear = this.mode === 'hijri' ? this.currentHijriYear : this.currentYear;
-    const startYear = currentYear - 100;
-    const endYear = currentYear + this.futureYearsLimit;
+    let startYear = currentYear - 100;
+    let endYear = currentYear + this.futureYearsLimit;
+    
+    // Adjust year range based on minDate and maxDate
+    if (this.mode === 'greg') {
+      if (this.minDate) {
+        startYear = Math.max(startYear, this.minDate.getFullYear());
+      }
+      if (this.maxDate) {
+        endYear = Math.min(endYear, this.maxDate.getFullYear());
+      }
+    } else if (this.mode === 'hijri') {
+      if (this.minDate) {
+        const minHijri = toHijri(this.minDate);
+        startYear = Math.max(startYear, minHijri.getFullYear());
+      }
+      if (this.maxDate) {
+        const maxHijri = toHijri(this.maxDate);
+        endYear = Math.min(endYear, maxHijri.getFullYear());
+      }
+    }
     
     this.years = [];
     for (let year = startYear; year <= endYear; year++) {
@@ -274,11 +301,31 @@ export class HijriDatePickerComponent implements OnInit, OnChanges {
   }
 
   private isDateDisabled(date: Date): boolean {
+    // Check minDate constraint
+    if (this.minDate) {
+      const minDateOnly = new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate());
+      const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      if (dateOnly < minDateOnly) {
+        return true;
+      }
+    }
+
+    // Check maxDate constraint
+    if (this.maxDate) {
+      const maxDateOnly = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate());
+      const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      if (dateOnly > maxDateOnly) {
+        return true;
+      }
+    }
+
+    // Check futureValidation constraint
     if (this.futureValidation) {
       const maxDate = new Date();
       maxDate.setFullYear(maxDate.getFullYear() + this.futureYearsLimit);
       return date > maxDate;
     }
+
     return false;
   }
 

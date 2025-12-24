@@ -113,6 +113,41 @@ import { HijriDatePickerComponent, SelectedDate, DatePickerStyles } from './lib/
             <pre>{{ selectedDates['minimal'] | json }}</pre>
           </div>
         </div>
+
+        <!-- Example 7: Date Range with minDate and maxDate -->
+        <div class="demo-card">
+          <h2>Date Range (Last 30 Days)</h2>
+          <hijri-date-picker
+            [mode]="'greg'"
+            [locale]="'en'"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [futureValidation]="false"
+            (dateSelected)="onDateSelected($event, 'range')">
+          </hijri-date-picker>
+          <div class="output" *ngIf="selectedDates['range']">
+            <strong>Selected:</strong>
+            <pre>{{ selectedDates['range'] | json }}</pre>
+          </div>
+        </div>
+
+        <!-- Example 8: Future Dates Only with minDate -->
+        <div class="demo-card">
+          <h2>Future Dates Only (Next 60 Days)</h2>
+          <hijri-date-picker
+            [mode]="'greg'"
+            [locale]="'en'"
+            [minDate]="today"
+            [maxDate]="maxFutureDate"
+            [futureValidation]="false"
+            [todaysDateText]="'Select Today or Future'"
+            (dateSelected)="onDateSelected($event, 'futureOnly')">
+          </hijri-date-picker>
+          <div class="output" *ngIf="selectedDates['futureOnly']">
+            <strong>Selected:</strong>
+            <pre>{{ selectedDates['futureOnly'] | json }}</pre>
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -184,6 +219,12 @@ import { HijriDatePickerComponent, SelectedDate, DatePickerStyles } from './lib/
 })
 export class DemoComponent {
   selectedDates: { [key: string]: any } = {};
+  
+  // Date range examples
+  today: Date = new Date();
+  minDate: Date = new Date(new Date().setDate(new Date().getDate() - 30)); // 30 days ago
+  maxDate: Date = new Date(); // Today
+  maxFutureDate: Date = new Date(new Date().setDate(new Date().getDate() + 60)); // 60 days from now
 
   customStyles: DatePickerStyles = {
     primaryColor: '#059669',

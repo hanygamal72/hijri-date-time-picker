@@ -110,6 +110,8 @@ export class AppComponent {
 | `futureValidation` | `boolean` | `true` | Prevent selecting dates beyond limit |
 | `futureYearsLimit` | `number` | `10` | Maximum years in the future |
 | `isRequired` | `boolean` | `false` | Require date selection before submit |
+| `minDate` | `Date` | `undefined` | Minimum selectable date |
+| `maxDate` | `Date` | `undefined` | Maximum selectable date |
 
 #### Selection & Binding
 

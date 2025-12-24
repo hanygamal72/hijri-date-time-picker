@@ -31,6 +31,7 @@ npm run build
 
 ## Quick Usage
 
+### Basic Example
 ```typescript
 import { HijriDatePickerComponent } from 'hijri-date-picker';
 
@@ -47,17 +48,43 @@ import { HijriDatePickerComponent } from 'hijri-date-picker';
 })
 ```
 
+### With Date Range (NEW)
+```typescript
+@Component({
+  imports: [HijriDatePickerComponent],
+  template: `
+    <hijri-date-picker
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [futureValidation]="false"
+      (dateSelected)="onDateSelected($event)">
+    </hijri-date-picker>
+  `
+})
+export class MyComponent {
+  // Allow only dates within last 30 days
+  minDate = new Date(new Date().setDate(new Date().getDate() - 30));
+  maxDate = new Date();
+  
+  onDateSelected(date: any) {
+    console.log('Selected:', date);
+  }
+}
+```
+
 ## All Implemented Features
 
-✅ **22+ Input Properties**
+✅ **24+ Input Properties**
 - Mode switching (Gregorian/Hijri)
 - Localization (English/Arabic)
 - RTL/LTR support
 - Single/multiple selection
 - Future date validation
+- **Min/Max date constraints (NEW)**
 - Custom labels (5 inputs)
 - Display toggles (5 inputs)
 - Custom styling (13 CSS properties)
+- Time picker support (5 inputs)
 
 ✅ **2 Output Events**
 - dateSelected
