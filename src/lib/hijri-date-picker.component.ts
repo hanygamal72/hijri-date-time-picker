@@ -642,6 +642,3 @@ export class HijriDatePickerComponent implements OnInit, OnChanges {
     };
   }
 }
-
-// Re-export types for external use
-export type { SelectedDate, DatePickerStyles, DateMode, Direction, Locale };

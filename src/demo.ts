@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { HijriDatePickerComponent, SelectedDate, DatePickerStyles } from './lib/hijri-date-picker.component';
+import { HijriDatePickerComponent } from './lib/hijri-date-picker.component';
+import { SelectedDate, DatePickerStyles } from './lib/hijri-date-picker.types';
 
 @Component({
   selector: 'app-demo',
