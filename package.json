@@ -4,6 +4,11 @@
   "description": "Angular standalone component for dual-mode Gregorian and Hijri date selection",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,8 +21,16 @@
     "calendar",
     "umm-al-qura"
   ],
-  "author": "",
+  "author": "Hany",
   "license": "MIT",
+  "homepage": "https://github.com/hanygamal72/hijri-date-time-picker#readme",
+  "bugs": {
+    "url": "https://github.com/hanygamal72/hijri-date-time-picker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanygamal72/hijri-date-time-picker.git"
+  },
   "peerDependencies": {
     "@angular/core": ">=15.0.0",
     "@angular/common": ">=15.0.0"

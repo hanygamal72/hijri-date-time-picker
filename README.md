@@ -8,6 +8,7 @@ An Angular standalone component for dual-mode Gregorian and Hijri date selection
 🌍 **Localization**: Full support for English and Arabic languages  
 ↔️ **RTL/LTR**: Automatic layout direction based on locale  
 📅 **Multiple Selection**: Single or multiple date selection modes  
+🕒 **DateTime Support**: NEW! Integrated time selection with modern styling  
 🎨 **Customizable Styling**: Comprehensive theming via CSS variables  
 ✅ **Validation**: Future date validation with configurable limits  
 📱 **Responsive**: Mobile-friendly design  
@@ -16,14 +17,14 @@ An Angular standalone component for dual-mode Gregorian and Hijri date selection
 ## Installation
 
 ```bash
-npm install hijri-date-picker hijri-date-time
+npm install hijri-date-picker hijri-date
 ```
 
 ## Dependencies
 
 - `@angular/core` >= 15.0.0
 - `@angular/common` >= 15.0.0
-- `hijri-date-time` ^1.0.0
+- `hijri-date` ^0.2.2
 
 ## Usage
 
@@ -48,67 +49,35 @@ import { HijriDatePickerComponent, SelectedDate } from 'hijri-date-picker';
 export class AppComponent {
   onDateSelected(date: SelectedDate) {
     console.log('Selected date:', date);
-    console.log('Gregorian:', date.formatted.gregorian);
-    console.log('Hijri:', date.formatted.hijri);
   }
 }
 ```
 
-### Advanced Example with All Options
+### DateTime Picker Example
 
-```typescript
-import { Component } from '@angular/core';
-import { HijriDatePickerComponent, SelectedDate, DatePickerStyles } from 'hijri-date-picker';
+```html
+<hijri-date-picker
+  [enableTime]="true"
+  [timeFormat]="'12'"
+  [minuteStep]="15"
+  [enableSeconds]="false"
+  (dateSelected)="onDateTimeSelected($event)">
+</hijri-date-picker>
+```
 
-@Component({
-  selector: 'app-advanced',
-  standalone: true,
-  imports: [HijriDatePickerComponent],
-  template: `
-    <hijri-date-picker
-      [canChangeMode]="true"
-      [mode]="'hijri'"
-      [dir]="'rtl'"
-      [locale]="'ar'"
-      [futureValidation]="false"
-      [futureYearsLimit]="20"
-      [multiple]="true"
-      [isRequired]="true"
-      [showConfirmButton]="true"
-      [submitTextButton]="'تأكيد'"
-      [todaysDateText]="'اليوم'"
-      [ummAlQuraDateText]="'التقويم الهجري (أم القرى)'"
-      [yearSelectLabel]="'السنة'"
-      [monthSelectLabel]="'الشهر'"
-      [todaysDateSection]="true"
-      [markToday]="true"
-      [disableYearPicker]="false"
-      [disableMonthPicker]="false"
-      [disableDayPicker]="false"
-      [styles]="customStyles"
-      (dateSelected)="onMultipleDatesSelected($event)"
-      (modeChanged)="onModeChanged($event)">
-    </hijri-date-picker>
-  `
-})
-export class AdvancedComponent {
-  customStyles: DatePickerStyles = {
-    primaryColor: '#059669',
-    secondaryColor: '#34d399',
-    selectedDateBackground: '#059669',
-    todayColor: '#f59e0b',
-    borderRadius: '12px',
-    fontFamily: 'Cairo, sans-serif'
-  };
+### Initial Date Binding
 
-  onMultipleDatesSelected(dates: SelectedDate[]) {
-    console.log('Selected dates:', dates);
-  }
+```html
+<!-- Single Date Selection -->
+<hijri-date-picker
+  [initialSelectedDate]="myDate">
+</hijri-date-picker>
 
-  onModeChanged(mode: 'greg' | 'hijri') {
-    console.log('Calendar mode changed to:', mode);
-  }
-}
+<!-- Multiple Dates Selection -->
+<hijri-date-picker
+  [multiple]="true"
+  [initialSelectedDates]="myDates">
+</hijri-date-picker>
 ```
 
 ## API Reference
@@ -124,6 +93,16 @@ export class AdvancedComponent {
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Text direction |
 | `locale` | `'en' \| 'ar'` | `'en'` | Language locale |
 
+#### DateTime Configuration (NEW)
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enableTime` | `boolean` | `false` | Enable time selection UI |
+| `timeFormat` | `'12' \| '24'` | `'24'` | Time display format |
+| `minuteStep` | `number` | `1` | Increment step for minutes |
+| `enableSeconds` | `boolean` | `false` | Show seconds selection |
+| `defaultTime` | `{ hours, minutes, seconds? }` | `undefined` | Default time to show |
+
 #### Validation
 
 | Input | Type | Default | Description |
@@ -132,12 +111,14 @@ export class AdvancedComponent {
 | `futureYearsLimit` | `number` | `10` | Maximum years in the future |
 | `isRequired` | `boolean` | `false` | Require date selection before submit |
 
-#### Selection
+#### Selection & Binding
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
 | `multiple` | `boolean` | `false` | Enable multiple date selection |
 | `showConfirmButton` | `boolean` | `false` | Show submit button |
+| `initialSelectedDate` | `Date` | `undefined` | Pre-select a single date |
+| `initialSelectedDates` | `Date[]` | `[]` | Pre-select multiple dates |
 
 #### Labels
 
@@ -148,22 +129,6 @@ export class AdvancedComponent {
 | `ummAlQuraDateText` | `string` | `'Umm Al-Qura Calendar'` | Calendar type label |
 | `yearSelectLabel` | `string` | `'Year'` | Year dropdown label |
 | `monthSelectLabel` | `string` | `'Month'` | Month dropdown label |
-
-#### Display Options
-
-| Input | Type | Default | Description |
-|-------|------|---------|-------------|
-| `todaysDateSection` | `boolean` | `true` | Show today button |
-| `markToday` | `boolean` | `true` | Highlight today's date |
-| `disableYearPicker` | `boolean` | `false` | Hide year selector |
-| `disableMonthPicker` | `boolean` | `false` | Hide month selector |
-| `disableDayPicker` | `boolean` | `false` | Hide day grid |
-
-#### Styling
-
-| Input | Type | Default | Description |
-|-------|------|---------|-------------|
-| `styles` | `DatePickerStyles` | `{}` | Custom style configuration |
 
 ### Outputs
 
@@ -184,102 +149,35 @@ interface SelectedDate {
     month: number;
     day: number;
   };
+  time?: {
+    hours: number;
+    minutes: number;
+    seconds: number;
+  };
   formatted: {
     gregorian: string;
     hijri: string;
+    time?: string;
   };
 }
 ```
 
-#### DatePickerStyles
+## Styling
+
+The component can be customized using the `styles` input or by overriding CSS variables:
 
 ```typescript
-interface DatePickerStyles {
-  primaryColor?: string;
-  secondaryColor?: string;
-  backgroundColor?: string;
-  textColor?: string;
-  selectedDateColor?: string;
-  selectedDateBackground?: string;
-  todayColor?: string;
-  disabledColor?: string;
-  borderColor?: string;
-  hoverColor?: string;
-  fontFamily?: string;
-  fontSize?: string;
-  borderRadius?: string;
-}
-```
-
-## Styling Examples
-
-### Custom Theme
-
-```typescript
-const customTheme: DatePickerStyles = {
-  primaryColor: '#6366f1',
+const customStyles: DatePickerStyles = {
+  primaryColor: '#4f46e5',
   secondaryColor: '#818cf8',
-  backgroundColor: '#ffffff',
-  textColor: '#1f2937',
-  selectedDateBackground: '#6366f1',
-  selectedDateColor: '#ffffff',
-  todayColor: '#10b981',
-  borderRadius: '8px',
-  fontFamily: 'Inter, sans-serif'
+  borderRadius: '8px'
 };
 ```
-
-### Dark Theme
-
-```typescript
-const darkTheme: DatePickerStyles = {
-  primaryColor: '#818cf8',
-  secondaryColor: '#6366f1',
-  backgroundColor: '#1f2937',
-  textColor: '#f9fafb',
-  borderColor: '#374151',
-  hoverColor: '#374151',
-  selectedDateBackground: '#818cf8'
-};
-```
-
-## Localization
-
-The component automatically adjusts:
-- Month names (Gregorian/Hijri)
-- Weekday names
-- Date formatting
-- Text direction (RTL for Arabic)
-
-### Arabic Example
-
-```html
-<hijri-date-picker
-  [locale]="'ar'"
-  [dir]="'rtl'"
-  [mode]="'hijri'"
-  [submitTextButton]="'إرسال'"
-  [todaysDateText]="'اليوم'">
-</hijri-date-picker>
-```
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
 
 ## License
 
 MIT
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 ## Credits
 
-Built with:
-- [Angular](https://angular.io/)
-- [hijri-date-time](https://www.npmjs.com/package/hijri-date-time) - Hijri calendar conversions
+Built with [Angular](https://angular.io/) and [hijri-date](https://www.npmjs.com/package/hijri-date).
