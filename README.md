@@ -1,6 +1,6 @@
-# Hijri Date Picker Component
+# Hijri Date Time Picker Component
 
-An Angular standalone component for dual-mode Gregorian and Hijri date selection using the Umm Al-Qura calendar system.
+An Angular standalone component for dual-mode Gregorian and Hijri date selection with time support using the Umm Al-Qura calendar system.
 
 ## Features
 
@@ -8,7 +8,7 @@ An Angular standalone component for dual-mode Gregorian and Hijri date selection
 🌍 **Localization**: Full support for English and Arabic languages  
 ↔️ **RTL/LTR**: Automatic layout direction based on locale  
 📅 **Multiple Selection**: Single or multiple date selection modes  
-🕒 **DateTime Support**: NEW! Integrated time selection with modern styling  
+🕒 **DateTime Support**: Integrated time selection with modern styling  
 🎨 **Customizable Styling**: Comprehensive theming via CSS variables  
 ✅ **Validation**: Future date validation with configurable limits  
 📱 **Responsive**: Mobile-friendly design  
@@ -17,7 +17,7 @@ An Angular standalone component for dual-mode Gregorian and Hijri date selection
 ## Installation
 
 ```bash
-npm install hijri-date-picker hijri-date
+npm install hijri-date-time-picker hijri-date
 ```
 
 ## Dependencies
@@ -32,7 +32,7 @@ npm install hijri-date-picker hijri-date
 
 ```typescript
 import { Component } from '@angular/core';
-import { HijriDatePickerComponent, SelectedDate } from 'hijri-date-picker';
+import { HijriDatePickerComponent, SelectedDate } from 'hijri-date-time-picker';
 
 @Component({
   selector: 'app-root',

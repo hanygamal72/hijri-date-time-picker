@@ -1,5 +1,5 @@
 {
-  "name": "hijri-date-picker",
+  "name": "hijri-date-time-picker",
   "version": "1.0.0",
   "description": "Angular standalone component for dual-mode Gregorian and Hijri date selection",
   "main": "dist/index.js",
