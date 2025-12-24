@@ -1,0 +1,196 @@
+<div class="hijri-date-picker" [dir]="dir" [style]="getCustomStyles()">
+  <!-- Header Section -->
+  <div class="picker-header">
+    <!-- Mode Toggle Button -->
+    <button 
+      *ngIf="canChangeMode" 
+      class="mode-toggle-btn"
+      (click)="toggleMode()"
+      [attr.aria-label]="mode === 'greg' ? 'Switch to Hijri' : 'Switch to Gregorian'">
+      {{ mode === 'greg' ? (locale === 'ar' ? 'تقويم هجري' : 'Hijri') : (locale === 'ar' ? 'تقويم ميلادي' : 'Gregorian') }}
+    </button>
+
+    <!-- Today's Date Section -->
+    <div *ngIf="todaysDateSection" class="todays-date">
+      <button class="today-btn" (click)="selectToday()">
+        {{ todaysDateText }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Calendar Controls -->
+  <div class="calendar-controls">
+    <!-- Year Picker -->
+    <div class="control-group" *ngIf="!disableYearPicker">
+      <label [attr.for]="'year-select'">{{ yearSelectLabel }}</label>
+      <select 
+        id="year-select"
+        [value]="mode === 'hijri' ? currentHijriYear : currentYear"
+        (change)="onYearChange($event)"
+        class="year-select">
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+    </div>
+
+    <!-- Month Picker -->
+    <div class="control-group" *ngIf="!disableMonthPicker">
+      <label [attr.for]="'month-select'">{{ monthSelectLabel }}</label>
+      <select 
+        id="month-select"
+        [value]="mode === 'hijri' ? currentHijriMonth : currentMonth"
+        (change)="onMonthChange($event)"
+        class="month-select">
+        <option *ngFor="let month of months; let i = index" [value]="i">
+          {{ month }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+      <button 
+        class="nav-btn prev-btn"
+        (click)="previousMonth()"
+        [attr.aria-label]="locale === 'ar' ? 'الشهر السابق' : 'Previous Month'">
+        {{ dir === 'rtl' ? '←' : '→' }}
+      </button>
+      <button 
+        class="nav-btn next-btn"
+        (click)="nextMonth()"
+        [attr.aria-label]="locale === 'ar' ? 'الشهر التالي' : 'Next Month'">
+        {{ dir === 'rtl' ? '→' : '←' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="calendar-grid" *ngIf="!disableDayPicker">
+    <!-- Weekday Headers -->
+    <div class="weekday-header">
+      <div class="weekday" *ngFor="let weekday of weekdays">
+        {{ weekday }}
+      </div>
+    </div>
+
+    <!-- Calendar Days -->
+    <div class="calendar-days">
+      <div 
+        *ngFor="let dayInfo of calendarDays"
+        class="day-cell"
+        [class.empty]="dayInfo.day === null"
+        [class.today]="markToday && dayInfo.isToday"
+        [class.selected]="dayInfo.isSelected"
+        [class.disabled]="dayInfo.isDisabled"
+        (click)="onDayClick(dayInfo)">
+        <span *ngIf="dayInfo.day !== null">{{ dayInfo.day }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time Picker Section -->
+  <div class="time-picker" *ngIf="enableTime">
+    <div class="time-picker-label">
+      {{ locale === 'ar' ? 'الوقت' : 'Time' }}
+    </div>
+    
+    <div class="time-inputs">
+      <!-- Hours Input -->
+      <div class="time-input-group">
+        <button class="time-btn" (click)="incrementTime('hours')">▲</button>
+        <input 
+          type="number" 
+          class="time-input"
+          [value]="timeFormat === '12' ? (selectedTime.hours % 12 || 12) : selectedTime.hours"
+          (input)="onTimeChange('hours', $event)"
+          [min]="timeFormat === '12' ? 1 : 0"
+          [max]="timeFormat === '12' ? 12 : 23"
+          [attr.aria-label]="locale === 'ar' ? 'الساعات' : 'Hours'">
+        <button class="time-btn" (click)="decrementTime('hours')">▼</button>
+      </div>
+      
+      <span class="time-separator">:</span>
+      
+      <!-- Minutes Input -->
+      <div class="time-input-group">
+        <button class="time-btn" (click)="incrementTime('minutes')">▲</button>
+        <input 
+          type="number" 
+          class="time-input"
+          [value]="selectedTime.minutes"
+          (input)="onTimeChange('minutes', $event)"
+          [min]="0"
+          [max]="59"
+          [step]="minuteStep"
+          [attr.aria-label]="locale === 'ar' ? 'الدقائق' : 'Minutes'">
+        <button class="time-btn" (click)="decrementTime('minutes')">▼</button>
+      </div>
+      
+      <!-- Seconds Input (Optional) -->
+      <ng-container *ngIf="enableSeconds">
+        <span class="time-separator">:</span>
+        <div class="time-input-group">
+          <button class="time-btn" (click)="incrementTime('seconds')">▲</button>
+          <input 
+            type="number" 
+            class="time-input"
+            [value]="selectedTime.seconds"
+            (input)="onTimeChange('seconds', $event)"
+            [min]="0"
+            [max]="59"
+            [attr.aria-label]="locale === 'ar' ? 'الثواني' : 'Seconds'">
+          <button class="time-btn" (click)="decrementTime('seconds')">▼</button>
+        </div>
+      </ng-container>
+      
+      <!-- AM/PM Toggle (12-hour format) -->
+      <div class="ampm-toggle" *ngIf="timeFormat === '12'">
+        <button 
+          class="ampm-btn"
+          [class.active]="!isPM"
+          (click)="setAMPM(false)">
+          AM
+        </button>
+        <button 
+          class="ampm-btn"
+          [class.active]="isPM"
+          (click)="setAMPM(true)">
+          PM
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected Dates Display -->
+  <div class="selected-dates" *ngIf="selectedDates.length > 0">
+    <div class="selected-label">
+      {{ locale === 'ar' ? 'التواريخ المحددة:' : 'Selected Dates:' }}
+    </div>
+    <div class="selected-list">
+      <div class="selected-item" *ngFor="let date of selectedDates">
+        <div class="selected-date-info">
+          <span class="date-text">
+            {{ mode === 'hijri' ? date.formatted.hijri : date.formatted.gregorian }}
+          </span>
+          <span class="time-text" *ngIf="enableTime && date.formatted.time">
+            {{ date.formatted.time }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="picker-footer" *ngIf="showConfirmButton">
+    <button 
+      class="submit-btn"
+      (click)="onSubmit()"
+      [disabled]="isRequired && selectedDates.length === 0">
+      {{ submitTextButton }}
+    </button>
+  </div>
+
+  <!-- Calendar Type Label -->
+  <div class="calendar-type" *ngIf="mode === 'hijri'">
+    <small>{{ ummAlQuraDateText }}</small>
+  </div>
+</div>

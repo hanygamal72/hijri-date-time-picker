@@ -1,0 +1,34 @@
+{
+  "name": "hijri-date-picker",
+  "version": "1.0.0",
+  "description": "Angular standalone component for dual-mode Gregorian and Hijri date selection",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "angular",
+    "hijri",
+    "gregorian",
+    "date-picker",
+    "calendar",
+    "umm-al-qura"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/core": ">=15.0.0",
+    "@angular/common": ">=15.0.0"
+  },
+  "dependencies": {
+    "hijri-date": "^0.2.2"
+  },
+  "devDependencies": {
+    "@angular/core": "^17.0.0",
+    "@angular/common": "^17.0.0",
+    "@angular/platform-browser": "^17.0.0",
+    "typescript": "^5.0.0"
+  }
+}
